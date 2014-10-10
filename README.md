@@ -3,7 +3,9 @@ overtone-intro
 
 Interactive slides for creating a simple music peace from scratch, in 4 minutes.
 
-overtone.org containse the presentation, I've been using org-tree-slide.el for running it.
+[![The presentation](http://img.youtube.com/vi/F3wmTsC_rbI/0.jpg)](http://www.youtube.com/watch?v=F3wmTsC_rbI)
+
+overtone.org contains the slides, I've been using org-tree-slide.el for running it.
 
 overtone-notes.org contains the narrative.
 
