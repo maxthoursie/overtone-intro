@@ -1,0 +1,242 @@
+#+TITLE:	Overtone - coding music from scratch
+#+AUTHOR:	Max Thoursie
+#+EMAIL:	max@spotify.com
+#+STARTUP:	content
+
+* Init
+
+[[file:~/code/clojure/overtone-testing/src/overtone_testing/demo1.clj::(boot-external-server)][boot]]
+
+#+BEGIN_SRC clojure
+(use 'overtone.core)
+
+(defn n [n] (midi->hz (note n)))
+#+END_SRC
+
+* Intro
+
+- Live music coding
+- Overtone
+
+* Sine waves
+
+#+BEGIN_SRC clojure :results silent
+
+(demo (sin-osc 80))
+
+#+END_SRC
+
+* Kick 1
+
+#+BEGIN_SRC clojure :results silent
+
+(demo
+  (let [env (env-gen (perc 0 0.6))]
+    (* (sin-osc 80) env)))
+
+#+END_SRC
+
+* Kick 2
+
+#+BEGIN_SRC clojure :results silent
+
+(demo
+  (let [env (env-gen (perc 0 0.6))]
+    (* 2 (sin-osc (+ 40 (* env env env 200))) env)))
+
+#+END_SRC
+
+* Snare 1
+
+#+BEGIN_SRC clojure :results silent
+
+  (demo
+   (let [env (env-gen (perc 0 0.6))
+         snare (* (pink-noise) env)]
+     snare))
+
+#+END_SRC
+
+* Snare 2
+
+#+BEGIN_SRC clojure :results silent
+
+  (demo
+   (let [env (env-gen (perc 0 0.6))
+         snare (* (pink-noise) env)
+         snare (+ snare (bpf (* 4 snare) 2000))]
+     snare))
+
+#+END_SRC
+
+* Beat
+
+#+BEGIN_SRC clojure :results silent
+
+  (definst kick []
+    (let [env (env-gen (perc 0 0.6))]
+      (* (sin-osc (+ 40 (* env env env 200))) env)))
+
+  (definst snare []
+    (let [env (env-gen (perc 0 0.6))
+          snare (* 1 (pink-noise) env)
+          snare (+ snare (bpf (* 4 snare) 2000))]
+      snare))
+
+  (defonce metro (metronome 120))
+
+  (at (metro (+ (metro) 0)) (kick))
+  (at (metro (+ (metro) 1)) (snare))
+
+#+END_SRC
+
+* Bar
+
+#+BEGIN_SRC clojure
+
+(def bar [[0 kick ]
+          [0 snare]])
+
+#+END_SRC
+
+* Sequencer
+
+#+BEGIN_SRC clojure
+
+(defn player [tick]
+  (let [beat (mod (int tick) (count bar))]
+    (doseq [[offset inst] (partition 2 (bar beat))]
+      (at (metro (+ tick offset)) (inst))))
+  (apply-by (metro (+ tick 1)) #'player (+ tick 1) []))
+
+(stop)
+(player (metro))
+
+#+END_SRC
+
+* Distortion
+
+#+BEGIN_SRC clojure
+  (definst kick []
+    (let [env (env-gen (perc 0 0.6))
+          kick (* 3 (sin-osc (+ 40 (* env env env 200))) env)]
+     (clip2 kick 0.5)))
+
+#+END_SRC
+
+* Vals-time
+
+#+BEGIN_SRC clojure
+
+(def bar [[0 kick ]
+          [0 snare]
+          [0 snare]])
+
+#+END_SRC
+
+* Better beat
+
+#+BEGIN_SRC clojure
+
+  (def bar [[  0 kick ]
+            [  0 snare
+             2/4 kick]
+            [  0 kick
+             3/4 kick]
+            [  0 snare]])
+
+#+END_SRC
+
+* Base 1
+
+#+BEGIN_SRC clojure
+
+(definst wob [speed 4 freq (n :e2)]
+  (let [wob (saw freq)
+        wob (+ wob
+               (bpf wob 1500 2)
+               (* 0.2 (g-verb wob 9 0.7 0.7)))]
+    (* 0.2 wob)))
+
+(kill wob)
+(wob)
+
+#+END_SRC
+
+
+* Base 2
+
+#+BEGIN_SRC clojure
+
+(definst wob [speed 4 freq (n :e2)]
+  (let [wob (mix (saw (* freq [0.99 1.01])))
+        wob (+ wob
+               (bpf wob 1500 2)
+               (* 0.2 (g-verb wob 9 0.7 0.7)))]
+    (* 0.3 wob)))
+
+(kill wob)
+(wob)
+
+#+END_SRC
+
+* Base 1
+
+#+BEGIN_SRC clojure
+
+(kill wob)
+(definst wob [speed 3 freq (n :e2)]
+  (let [sweep (lin-exp (lf-tri speed) -1 1 40 3000)
+        wob (mix (saw (* freq [0.99 1.01])))
+        wob (lpf wob sweep)
+        wob (+ wob
+               (bpf wob 1500 2)
+               (* 0.2 (g-verb wob 9 0.7 0.7)))]
+    wob))
+
+(wob)
+
+#+END_SRC
+
+* Wobble
+
+#+BEGIN_SRC clojure
+  (def bar
+    (let [wobble [[0 #(ctl wob :freq (n :e1) :speed 1)]
+                  [0 #(ctl wob :speed 2)]
+                  [0 #(ctl wob :speed 4)]
+                  [0 #(ctl wob :speed 8)]
+                  [0 #(ctl wob :freq (n :f#5) :speed 8)]
+                  [0 #(ctl wob :freq (n :e2) :speed 2)]
+                  [0 #(ctl wob :speed 4)]
+                  [0 #(ctl wob :speed 8)]]
+
+          drum [[  0   kick]
+                [  0   snare
+                 2/4   kick]
+                [  0   kick
+                 3/4   kick]
+                [  0   snare]]]
+
+      (mapv concat wobble (cycle drum))))
+
+ #+END_SRC
+
+
+
+* Visualization
+
+- By Sergey Basheleyshvili
+- In C++ using Cinder
+
+* Fin
+
+#+BEGIN_SRC clojure
+
+(stop) ;; Don't stop the music
+
+#+END_SRC
+
+# Local Variables:
+# eval: (setq-local org-babel-default-header-args:clojure '((:results . "silent")))
+# End:

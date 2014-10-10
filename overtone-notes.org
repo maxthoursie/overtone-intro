@@ -1,0 +1,97 @@
+#+OPTIONS: toc:nil        (no default TOC at all)
+
+* Intro
+
+Hello, I'm Max.
+
+This hackweek I've been exploring *interactive programming*, and I want to
+give you a taste of what it can look like.
+
+I will be creating a music piece from *scratch*, I'm using *programmable
+synthezier* called *overtone*. Coupled with an *editor* where I can *write code* and
+*evalutate* it right away, I can do this *live* while the *music is sounding*.
+
+* Sine waves
+
+This is a function that plays a *sinewave*. It sounds like this. I can put
+a diffrent *frequency* in to get a deeper sound.
+
+* Kick 1
+
+Let's turn this into a *kick drum* by using an *envelope* to modify the *volume
+over time*. This is a *percussion envelope*, with an *immiediate attack* and
+a *longer decay*.
+
+* Kick 2
+
+Let's use the same envelope to modify the *pitch*, to start high, and
+quickly fall down.
+
+* Snare 1
+
+Using the same thechniques we can create a *snare drum*, by replacing the
+*sine wave* with *pink noise*.
+
+* Snare 2
+
+To get more punch in that, we *amplify frequencies* around *2000 hertz* by
+mixing in a *band pass filter*.
+
+* Beat
+
+We can turn these *drums* into *functions* that will act as *instruments*, and
+then we can *schedule* them for the first and second beat using a
+*metronome*. But we want it to *repeat*.
+
+* Bar
+
+So we *capture* that in a *pattern*. The kick followed by a snare.
+
+* Sequencer
+
+And create a little *sequencer*. This will use the pattern to *schedule* the
+drums we defined, and then *repeat*.
+
+* Distortion
+
+Let's go back and add a little *distortion* to the kick drum while it's
+*playing* by *clipping* the top of the curve.
+
+* Vals-time
+
+And we can change the pattern. By adding and *extra snare* we'll turn
+this into a *vals*.
+
+* Better beat
+
+The *little sequencer* I showed you earlier supports *offseting the
+sounds* a little bit from the beat, so I can create more *interesting
+beats*.
+
+* Base 1
+
+Let's use a *saw wave* to define a *base sound*.
+
+* Base 2
+
+Making it more interesting by *mixing* two saw waves *slightly apart*.
+
+* Base 3
+
+And add the *wobble* by taking a *low frequency triangle wave* and using
+that to control the *cut-off* frequency for a *low-pass filter*.
+
+* Wobble
+
+So let's add some *wobble controls* to the *sequencer*, are you ready for *the
+drop*?
+
+* Fin
+
+So creating this from *scratch*, from an *empty buffer*, while *explaining*,
+takes me about *20 minutes*. For this 4 minute version, I had to *skip* over
+the *details*. I hope you had *as fun as I had* anyway.
+
+This is my *last day* at spotify, I've been here for *seven years* and It's
+been a *blast*. Don't *stop* the music, *as I will* do now.
+thank you!
